@@ -26,15 +26,23 @@ var Comment = Backbone.Model.extend({
   initialize: function(message) {
     /* Set the initial values for `votes` to 0 and `message` to the message.
      * Remember to use setters when working with attributes! */
+     
+    this.set('votes', 0);
+    this.set('message', message);
   },
   votes: function() {
     /* Return the votes attribute on this model.
      * Remember to use a getter when working with attributes! */
+     return this.get('votes');
   },
   upvote: function(){
     // Set the `votes` attribute to the current vote count plus one.
-  }
+    this.set('votes',this.get('votes')+1);
+  },
   // Add a downvote function; don't forget the comma above.
+  downvote: function() {
+    this.set('votes',this.get('votes')-1);
+  }
 });
 
 /* - Backbone VIEW ------------------------------------------------------------
@@ -81,17 +89,28 @@ var CommentView = Backbone.View.extend({
   // Now that we have an event listener calling `render`, we must define it:
   render: function() {
     // As in step2, we define a template:
-    var html = [
-      '<div>',
-        '<span class="votes">',
-          this.model.get('votes'),
-        '<span>',
-        '<span class="comment">',
-          this.model.get('message'),
-        '</span>',
-        '</br>',
-      '</div>'
-    ].join('');
+    // var html = [
+    //   '<div>',
+    //     '<span class="votes">',
+    //       this.model.get('votes'),
+    //     '<span>',
+    //     '<span class="comment">',
+    //       this.model.get('message'),
+    //     '</span>',
+    //     '</br>',
+    //   '</div>'
+    // ].join('');
+    var html = `
+      <div>
+        <span class="votes">
+          ${this.model.get('votes')}
+        <span> 
+        <span class="comment">
+          ${this.model.get('message')}
+        </span>
+        </br>
+      </div>
+      `;
 
     /* When we defined our own render function, we had to deal with jQuery.
      * Backbone gives us a convenience method to take care of this:
@@ -137,7 +156,7 @@ var commentView = new CommentView({ model: comment });
  */
 
 // Append the view to the page. This is why we returned html from `render`:
-// $('body').append(commentView.render());
+$('body').append(commentView.render());
 
 /* The number of votes should be 0.
  * We set that as the initial default value in the comment model.
